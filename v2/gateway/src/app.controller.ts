@@ -6,12 +6,16 @@ import {
   Delete,
   ExecutionContext,
   Get,
+  Headers,
   HttpCode,
+  HttpException,
+  HttpStatus,
   Injectable,
   Param,
   Post,
   Query,
   Req,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { LoyaltyService } from './services/loyalty/loyalty.service';
@@ -24,17 +28,6 @@ import { Reservation } from './models/reservation';
 import { Request } from 'express';
 import { map, Observable } from 'rxjs';
 
-@Injectable()
-export class AuthGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    console.log('\n\nguard!!!!\n\n');
-    const request = context.switchToHttp().getRequest();
-    return validateRequest(request);
-  }
-}
-
 export function validateRequest(request: any) {
   console.log('\n\n\n');
   console.log(request);
@@ -43,7 +36,6 @@ export function validateRequest(request: any) {
 }
 
 @Controller('api/v1')
-@UseGuards(AuthGuard)
 export class AppController {
   constructor(
     private loaltyService: LoyaltyService,
@@ -57,7 +49,14 @@ export class AppController {
   }
 
   @Get('/hotels')
-  async getHotels(@Query('page') page: number, @Query('size') size: number) {
+  async getHotels(
+    @Headers() headers,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
+    if (!headers.authorization) {
+      throw new HttpException('Unathorized', HttpStatus.UNAUTHORIZED);
+    }
     return this.reservationService
       .getHotels(page, size)
       .pipe(
@@ -92,7 +91,10 @@ export class AppController {
   }
 
   @Get('/reservations')
-  async getReservations(@Req() request: Request) {
+  async getReservations(@Headers() headers, @Req() request: Request) {
+    if (!headers.authorization) {
+      throw new HttpException('Unathorized', HttpStatus.UNAUTHORIZED);
+    }
     const username: string = request.headers['x-user-name']?.toString();
     if (!username) throw new BadRequestException('x-user-name');
     return this.getAllReservations(username);
@@ -101,11 +103,15 @@ export class AppController {
   @Post('/reservations/')
   @HttpCode(200)
   async createReservation(
+    @Headers() headers,
     @Req() request: Request,
     @Body('startDate') startDate: string,
     @Body('endDate') endDate: string,
     @Body('hotelUid') hotelUid: string,
   ) {
+    if (!headers.authorization) {
+      throw new HttpException('Unathorized', HttpStatus.UNAUTHORIZED);
+    }
     const username: string = request.headers['x-user-name']?.toString();
     if (!username) throw new BadRequestException('x-user-name');
     const hotel = await this.reservationService.getHotel(hotelUid).toPromise();
@@ -165,9 +171,13 @@ export class AppController {
 
   @Get('/reservations/:reservationId')
   async getReservationById(
+    @Headers() headers,
     @Param('reservationId') uid: string,
     @Req() request: Request,
   ) {
+    if (!headers.authorization) {
+      throw new HttpException('Unathorized', HttpStatus.UNAUTHORIZED);
+    }
     const username: string = request.headers['x-user-name']?.toString();
     if (!username) throw new BadRequestException('x-user-name');
 
@@ -193,9 +203,13 @@ export class AppController {
   @Delete('/reservations/:reservationId')
   @HttpCode(204)
   async deleteReservation(
+    @Headers() headers,
     @Param('reservationId') uid: string,
     @Req() request: Request,
   ) {
+    if (!headers.authorization) {
+      throw new HttpException('Unathorized', HttpStatus.UNAUTHORIZED);
+    }
     const username: string = request.headers['x-user-name']?.toString();
     if (!username) throw new BadRequestException('x-user-name');
 
@@ -213,7 +227,10 @@ export class AppController {
   }
 
   @Get('loyalty')
-  async getLoyalty(@Req() request: Request) {
+  async getLoyalty(@Headers() headers, @Req() request: Request) {
+    if (!headers.authorization) {
+      throw new HttpException('Unathorized', HttpStatus.UNAUTHORIZED);
+    }
     const username: string = request.headers['x-user-name']?.toString();
     if (!username) throw new BadRequestException('x-user-name');
 
@@ -225,7 +242,10 @@ export class AppController {
   }
 
   @Get('/me')
-  async getMe(@Req() request: Request) {
+  async getMe(@Headers() headers, @Req() request: Request) {
+    if (!headers.authorization) {
+      throw new HttpException('Unathorized', HttpStatus.UNAUTHORIZED);
+    }
     const username: string = request.headers['x-user-name']?.toString();
     if (!username) throw new BadRequestException('x-user-name');
     const reservations = await this.getAllReservations(username);

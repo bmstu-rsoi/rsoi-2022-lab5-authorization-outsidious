@@ -2,6 +2,9 @@ name: GitHub Classroom Workflow
 on:
   push:
     branches: [ master ]
+env:
+  OKTETO_SERVER: ${{ secrets.OKTETO_SERVER }}
+  OKTETO_TOKEN: ${{ secrets.OKTETO_TOKEN }}
 jobs:
   build:
     name: Autograding

@@ -34,41 +34,15 @@
 							"type": "noauth"
 						},
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "scope",
-									"value": "openid",
-									"type": "text"
-								},
-								{
-									"key": "grant_type",
-									"value": "password",
-									"type": "text"
-								},
-								{
-									"key": "username",
-									"value": "{{username}}",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "{{password}}",
-									"type": "text"
-								},
-								{
-									"key": "clientId",
-									"value": "{{clientId}}",
-									"type": "text"
-								},
-								{
-									"key": "clientSecret",
-									"value": "{{clientSecret}}",
-									"type": "text"
-								}
-							]
+							"mode": "raw",
+							"raw": "{\"client_id\":\"WXCZ5ceGSqKilqDmrmpgn6u0olifIoq0\",\"client_secret\":\"SIagYCxdVknPL14xsp94XQOUYht-4swW4lbS4xyP2R9DFR-RQvkjVro2IjeXvqxZ\",\"audience\":\"http://127.0.0.1:8080\",\"grant_type\":\"password\",\"username\":\"artem2000vlas@mail.ru\",\"password\":\"75ImabodTest\",\"scope\":\"openid\"}"
 						},
 						"url": {
 							"raw": "{{identityProviderUrl}}/oauth/token",

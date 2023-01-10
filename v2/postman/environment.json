@@ -9,27 +9,27 @@
     },
     {
       "key": "identityProviderUrl",
-      "value": "",
+      "value": "https://dev-81hplz7s136q0s6b.us.auth0.com",
       "enabled": true
     },
     {
       "key": "username",
-      "value": "",
+      "value": "artem2000vlas@mail.ru",
       "enabled": true
     },
     {
       "key": "password",
-      "value": "",
+      "value": "75ImabodTest",
       "enabled": true
     },
     {
       "key": "clientId",
-      "value": "",
+      "value": "WXCZ5ceGSqKilqDmrmpgn6u0olifIoq0",
       "enabled": true
     },
     {
       "key": "clientSecret",
-      "value": "",
+      "value": "SIagYCxdVknPL14xsp94XQOUYht-4swW4lbS4xyP2R9DFR-RQvkjVro2IjeXvqxZ",
       "enabled": true
     }
   ],

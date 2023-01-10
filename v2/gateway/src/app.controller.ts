@@ -1,14 +1,18 @@
 import {
   BadRequestException,
   Body,
+  CanActivate,
   Controller,
   Delete,
+  ExecutionContext,
   Get,
   HttpCode,
+  Injectable,
   Param,
   Post,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { LoyaltyService } from './services/loyalty/loyalty.service';
 import { PaymentService } from './services/payment/payment.service';
@@ -18,9 +22,28 @@ import { v4 as uuid4 } from 'uuid';
 import { Payment } from './models/payment';
 import { Reservation } from './models/reservation';
 import { Request } from 'express';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    console.log('\n\nguard!!!!\n\n');
+    const request = context.switchToHttp().getRequest();
+    return validateRequest(request);
+  }
+}
+
+export function validateRequest(request: any) {
+  console.log('\n\n\n');
+  console.log(request);
+  console.log('\n\n\n');
+  return true;
+}
 
 @Controller('api/v1')
+@UseGuards(AuthGuard)
 export class AppController {
   constructor(
     private loaltyService: LoyaltyService,
